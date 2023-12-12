@@ -10,7 +10,7 @@ func TestGetCalibrationValueTwoNumbers(t *testing.T) {
 	result := GetCalibrationValue(input)
 
 	if want != result {
-		t.Fatalf(`Expected %q, got %#q`, input, want)
+		t.Fatalf(`Expected %v, got %#v`, want, result)
 	}
 }
 
@@ -20,7 +20,7 @@ func TestGetCalibrationValueOneNumber(t *testing.T) {
 	result := GetCalibrationValue(input)
 
 	if want != result {
-		t.Fatalf(`Expected %q, got %#q`, input, want)
+		t.Fatalf(`Expected %v, got %#v`, want, result)
 	}
 }
 
@@ -30,6 +30,6 @@ func TestGetCalibrationValueThreeNumbers(t *testing.T) {
 	result := GetCalibrationValue(input)
 
 	if want != result {
-		t.Fatalf(`Expected %q, got %#q`, input, want)
+		t.Fatalf(`Expected %v, got %#v`, want, result)
 	}
 }
