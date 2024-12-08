@@ -31,35 +31,44 @@
 	(let [diff (- val compare-val)]
 		(and (< diff 0) (> diff -4))))
 
-(defn increasing-slowly?
-	[coll]
+(defn pairs-pred?
+	[pred coll]
 	(let [first (first coll)
 				second (second coll)
 				rest (rest coll)]
 		(cond
 			(nil? first) false
 			(empty? rest) true
-			(and (some? second) (not (increase-within? first second))) false
-			:else (increasing-slowly? rest))))
-
-(defn decreasing-slowly?
-	[coll]
-	(let [first (first coll)
-				second (second coll)
-				rest (rest coll)]
-		(cond
-			(nil? first) false
-			(and (some? second) (not (decrease-within? first second))) false
-			(empty? rest) true
-			:else (decreasing-slowly? rest))))
+			(and (some? second) (not (pred first second))) false
+			:else (pairs-pred? pred rest))))
+;; Update after research on other solutions:
+;; (partition 2 1 coll) could have been used. It returns every possible pair
+;; in the collection (e.g. for (1 2 3 4) => ((1 2) (2 3) (3 4))) and therefore
+;; allows to just calculate each difference. After that it would have been enough
+;; to check every (with (every?)) difference to be in range as well as all positive
+;; or all negative. This should also be more performant that the recursion I came
+;; up with
 
 (defn safe?
 	[coll]
-	(or (decreasing-slowly? coll) (increasing-slowly? coll)))
+	(or (pairs-pred? increase-within? coll) (pairs-pred? decrease-within? coll)))
 
 (defn part1
 	[input]
 	(count (filter safe? (process-input input))))
 
+;; Part 2 - Dampened differences
+(defn possible-combinations
+	[coll]
+	(let [indexes (range (count coll))]
+		(map (fn [index]
+					 (keep-indexed #(when (not (= %1 index)) %2) coll)) indexes)))
+
+(defn some-combination-safe?
+	[coll]
+	(let [some-is-safe (some safe? (possible-combinations coll))]
+		(if (= true some-is-safe) true false)))
+
 (defn part2
-	[input])
+	[input]
+	(count (filter some-combination-safe? (process-input input))))
